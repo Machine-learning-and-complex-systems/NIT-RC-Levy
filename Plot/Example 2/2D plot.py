@@ -46,28 +46,61 @@ def create_composite_figure(dataset, save_name="composite_plot.png"):
     ax1.text(-0.04, 1.1, '(a)', transform=ax1.transAxes, fontweight='bold', va='top')
 
 
-        # Panel 2: Scatter plot 
-    ax2 = fig.add_subplot(gs[1, 0])
+    #     # Panel 2: Scatter plot 
+    # ax2 = fig.add_subplot(gs[1, 0])
     
-    pred_same_length = pred[:5000]
-    train_x = train[:5000, 0]
-    train_y = train[:5000, 1]
-    pred_x = pred_same_length[:, 0]
-    pred_y = pred_same_length[:, 1]
-    # Generate time values for color mapping
-    time_values_train = np.linspace(0, 50, 5000)
-    time_values_pred = np.linspace(50, 100, 5000)
+    # pred_same_length = pred[:5000]
+    # train_x = train[:5000, 0]
+    # train_y = train[:5000, 1]
+    # pred_x = pred_same_length[:, 0]
+    # pred_y = pred_same_length[:, 1]
+    # # Generate time values for color mapping
+    # time_values_train = np.linspace(0, 50, 5000)
+    # time_values_pred = np.linspace(50, 100, 5000)
 
     
-    sc_train = ax2.scatter(train_x, train_y, c=time_values_train, cmap='viridis', label='Training Data', alpha=0.6, marker='o')
+    # sc_train = ax2.scatter(train_x, train_y, c=time_values_train, cmap='viridis', label='Training Data', alpha=0.6, marker='o')
     
-    sc_pred = ax2.scatter(pred_x, pred_y, c=time_values_pred, cmap='viridis', label='Predicted Data', marker='x', alpha=0.6)
+    # sc_pred = ax2.scatter(pred_x, pred_y, c=time_values_pred, cmap='viridis', label='Predicted Data', marker='x', alpha=0.6)
+
+    # ax2.set(xlabel='X', ylabel='Y')
+    # ax2.legend()
+    # ax2.text(-0.1, 1.1, '(b)', transform=ax2.transAxes, fontweight='bold', va='top')
+  
+    # cbar = fig.colorbar(plt.cm.ScalarMappable(cmap='viridis', norm=plt.Normalize(vmin=0, vmax=100)), ax=ax2, label='Time')
+
+
+    # ----- REVISED PANEL 2: PLOTTING EVERY 10TH POINT -----
+    ax2 = fig.add_subplot(gs[1, 0])
+    
+    # Define the step for plotting
+    plot_step = 10
+
+    # Select every 10th point from the data
+    train_x = train[:5000:plot_step, 0]
+    train_y = train[:5000:plot_step, 1]
+    pred_x = pred[:5000:plot_step, 0]
+    pred_y = pred[:5000:plot_step, 1]
+    
+    # Also subsample the time values for color mapping to match data length
+    time_values_train = np.linspace(0, 50, 5000)[::plot_step]
+    time_values_pred = np.linspace(50, 100, 5000)[::plot_step]
+
+    # You might want to make the markers a bit larger or less transparent
+    # now that there are fewer points.
+    sc_train = ax2.scatter(train_x, train_y, c=time_values_train, cmap='viridis', 
+                           label='Training Data', alpha=0.8, marker='o', s=20) # s is marker size
+    
+    sc_pred = ax2.scatter(pred_x, pred_y, c=time_values_pred, cmap='viridis', 
+                          label='Predicted Data', marker='x', alpha=0.8, s=20)
 
     ax2.set(xlabel='X', ylabel='Y')
     ax2.legend()
     ax2.text(-0.1, 1.1, '(b)', transform=ax2.transAxes, fontweight='bold', va='top')
-  
-    cbar = fig.colorbar(plt.cm.ScalarMappable(cmap='viridis', norm=plt.Normalize(vmin=0, vmax=100)), ax=ax2, label='Time')
+ 
+    # The colorbar remains the same
+    cbar = fig.colorbar(plt.cm.ScalarMappable(cmap='viridis', norm=plt.Normalize(vmin=0, vmax=100)), 
+                        ax=ax2, label='Time')
 
    
     ax3 = fig.add_subplot(gs[1, 1])
@@ -91,7 +124,7 @@ def create_composite_figure(dataset, save_name="composite_plot.png"):
 
 
 
-    # 面板 4: Transition time distribution
+    #  Transition time distribution
     ax4 = fig.add_subplot(gs[1, 2])
     times_true = dataset.times_true * dt
     times_pred = dataset.times_pred * dt
@@ -117,7 +150,6 @@ def create_composite_figure(dataset, save_name="composite_plot.png"):
     
     plt.tight_layout()
 
-        # 修改保存路径和文件格式
     new_save_name = "limit cycle.pdf"
     save_path = os.path.join(os.path.dirname(__file__), new_save_name)
     plt.savefig(save_path, bbox_inches='tight', dpi=400)

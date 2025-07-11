@@ -1,7 +1,7 @@
 # NIT-RC-Levy
 
 This is the code repository for the research paper: "Multi-scaling reservoir computing learns noise-induced transitions with
-Lévy noise".
+Lévy noise" Chaos (2025).
 
 We extend the multi-scaling RC method to the case of stochastic differential equations with Lévy noise and limit cycle system.
 
